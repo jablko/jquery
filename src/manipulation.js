@@ -486,7 +486,13 @@ jQuery.extend({
 					div = context.createElement("div");
 
 				// Go to html and back, then peel off extra wrappers
-				div.innerHTML = wrap[1] + elem + wrap[2];
+				try {
+					div.innerHTML = wrap[1] + elem + wrap[2];
+				} catch(e) {
+
+					// .innerHTML throws exception in non-HTML documents, #5022
+					div.appendChild(new DOMParser().parseFromString(wrap[1] + elem + wrap[2], context.contentType).documentElement);
+				}
 
 				// Move to the right depth
 				while ( depth-- ) {
